@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casters – Battle Coliseum</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f3f6;--fg:#15171d;--mut:#5b6170;--card:#fff;--line:#d5d8e0;--acc:#1d4ed8;--bs:48%;--bl:90%;--bt:20%;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1117;--fg:#eceef4;--mut:#9aa1b2;--card:#171a23;--line:#2a2f3c;--acc:#7aa2ff;--bs:36%;--bl:22%;--bt:90%}}
+:root[data-theme="dark"]{--bg:#0f1117;--fg:#eceef4;--mut:#9aa1b2;--card:#171a23;--line:#2a2f3c;--acc:#7aa2ff;--bs:36%;--bl:22%;--bt:90%}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.35 "Barlow Semi Condensed",system-ui,sans-serif}
+header{padding:20px 20px 8px;max-width:1240px;margin:auto}
+h1{margin:0;font-size:30px;font-weight:700;letter-spacing:.2px}
+header p{margin:4px 0 0;color:var(--mut)}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.tabs button,select{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);padding:8px 14px;border-radius:6px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+button:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+main{max-width:1240px;margin:auto;padding:8px 20px 40px}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.board{min-width:1080px;padding:0 12px 12px 112px;position:relative}
+.hours{position:relative;height:28px;border-bottom:1px solid var(--line)}
+.hours span{position:absolute;top:6px;font-size:12px;color:var(--mut);transform:translateX(-50%)}
+.row{position:relative;height:178px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.st{position:absolute;left:-100px;top:10px;width:92px;font-weight:700;font-size:15px}
+.grid{position:absolute;top:0;bottom:0;width:1px;background:var(--line);opacity:.6}
+.blk{position:absolute;top:8px;bottom:8px;padding:8px 10px;border-radius:6px;overflow:hidden;font-size:13px;transition:opacity .15s}
+.g{background:hsl(var(--h) var(--bs) var(--bl));color:hsl(var(--h) 30% var(--bt));border-left:5px solid hsl(var(--h) 60% 45%)}
+.o{background:transparent;border:1px dashed var(--line);color:var(--mut)}
+.blk b{display:block;font-size:15px;line-height:1.15}
+.tm{font-size:12px;opacity:.85;margin-bottom:4px}
+.ph{margin-top:3px}.ph i{font-style:normal;font-weight:600}
+.bk{display:block;opacity:.65;font-size:12px}
+.dim{opacity:.18}.hit{outline:3px solid var(--acc);outline-offset:-1px}
+mark{background:var(--acc);color:var(--bg);border-radius:3px;padding:0 3px}
+#list{margin-top:18px}
+#list h2{font-size:19px;margin:0 0 8px}
+#list ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+#list li{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+.leg{color:var(--mut);font-size:13px;margin-top:10px}
+</style></head><body>
+<header><h1>Casters – Battle Coliseum</h1>
+<p>Quem está em cada jogo e fase. Horários de Brasília (UTC-3).</p>
+<div class="bar"><div class="tabs" role="tablist" id="tabs"></div>
+<label>Caster <select id="who"><option value="">Todos</option></select></label></div></header>
+<main><div class="scroll"><div class="board" id="board"></div></div>
+<p class="leg">Linha clara: backup da fase. Escolha um caster para destacar os turnos dele.</p>
+<section id="list" aria-live="polite"></section></main>
+<script>
+const D=[{"d": "Sexta 20/11", "s": [{"n": "Palco 1", "i": [{"s": 660, "e": 870, "g": "Marvel Tokon", "h": 25, "f": "Pools até Top 24", "ph": [["Pools PT1", ["Gokudeira12", "BlackJet"], []], ["Pools PT2", ["Gaiserick", "Bomber"], []]]}, {"s": 870, "e": 990, "g": "MK1", "h": 305, "f": "Top 16", "ph": [["TOP 24", ["Malater", "Onexth"], []]]}, {"s": 990, "e": 1230, "g": "MK1", "h": 305, "f": "Top 8", "ph": [["TOP 8", ["CarolTheQueen", "Panda"], []]]}]}, {"n": "Palco 2", "i": [{"s": 660, "e": 810, "g": "KOF XV", "h": 225, "f": "Pools até Top 8", "ph": [["Pools + TOP 24", ["Bomber", "lucaofgc"], []]]}, {"s": 840, "e": 1050, "g": "Brawlhalla", "h": 165, "f": "Pools até Top 8", "ph": [["Pools + TOP 24", ["Macaw", "Sanchinhu"], []]]}, {"s": 1050, "e": 1230, "g": "2XKO", "h": 140, "f": "Pools até Top 24", "ph": [["Pools PT1", ["B.K. Johnson", "IDC É O ZEUS"], []], ["Pools PT2", ["Snack012", "Bomber"], []]]}]}, {"n": "Palco 3", "i": [{"s": 660, "e": 840, "g": "GBVSR", "h": 190, "f": "Pools até Top 24", "ph": [["Pools PT1", ["OP", "NathanIWN"], []], ["Pools PT2", ["Mihawk", "Sorixx"], ["BrunoChrosS", "PL4Y"]]]}, {"s": 840, "e": 1020, "g": "UNI2 Sys:Celes", "h": 265, "f": "Pools até Top 8", "ph": [["Pools PT1", ["Ferovsky", "Guizin"], ["Gokudeira12", "josegalas"]], ["Pools PT2", ["BlackJet", "tatzoo"], ["Sorixx", "Gaiserick"]], ["TOP 24", ["Gokudeira12", "Djibuti"], ["josegalas", "Guizin"]]]}, {"s": 1020, "e": 1230, "g": "Avatar Legends", "h": 85, "f": "Pools até Top 8", "ph": [["Pools PT1", ["Magic", "Gokudeira12"], []], ["Pools PT2", ["Negofist", "Tetsuya_"], ["Momo", "Gaiserick"]], ["TOP 24", ["ZateFGC", "BrenoTsu"], ["Magic", "Negofist"]]]}]}]}, {"d": "Sábado 21/11", "s": [{"n": "Palco 1", "i": [{"s": 600, "e": 780, "g": "Marvel Tokon", "h": 25, "f": "Top 24 até Top 8", "ph": [["TOP 24", ["Millia", "Tortonon"], []]]}, {"s": 810, "e": 990, "g": "SF6", "h": 50, "f": "Pools", "ph": [["Pools PT1", ["HorisOS", "Ricci"], []], ["Pools PT2", ["HorisOS", "Tetsuya_"], []]]}, {"s": 990, "e": 1230, "g": "MK1", "h": 305, "f": "KBMK Top 8", "ph": []}]}, {"n": "Palco 2", "i": [{"s": 600, "e": 780, "g": "Garou: COTW", "h": 335, "f": "Pools até Top 8", "ph": [["Pools PT1", ["Sandrinho", "lucaofgc"], []], ["Pools PT2", ["Bomber", "CarolTheQueen"], []], ["TOP 24", ["Sandrinho", "Bomber"], []]]}, {"s": 810, "e": 1050, "g": "Brawlhalla", "h": 165, "f": "Top 8", "ph": [["TOP 8", ["Macaw", "MAZIN"], []]]}, {"s": 1050, "e": 1230, "g": "2XKO", "h": 140, "f": "Top 24 até Top 8", "ph": [["TOP 24", ["Bomber", "Keoma"], []]]}]}, {"n": "Palco 3", "i": [{"s": 600, "e": 840, "g": "GGST", "h": 0, "f": "Pools até Top 24", "ph": [["Pools PT1", ["tatzoo", "Jansolo"], []], ["Pools PT2", ["Gokudeira12", "Gaiserick"], []]]}, {"s": 870, "e": 1050, "g": "UNI2 Sys:Celes", "h": 265, "f": "Top 8", "ph": [["TOP 8", ["josegalas", "ZateFGC"], ["Sorixx", "Guizin"]]]}, {"s": 1050, "e": 1230, "g": "Avatar Legends", "h": 85, "f": "Top 8", "ph": [["TOP 8", ["Gokudeira12", "Negofist"], ["ZateFGC", "Tetsuya_"]]]}]}]}, {"d": "Domingo 22/11", "s": [{"n": "Palco 1", "i": [{"s": 600, "e": 780, "g": "SF6", "h": 50, "f": "Top 48 até Top 8", "ph": [["TOP 96", ["ShadowTheDemon", "Millia"], []], ["TOP 24", ["BrunoChrosS", "pizzaiolom"], []]]}, {"s": 810, "e": 1020, "g": "Marvel Tokon", "h": 25, "f": "Top 8", "ph": [["TOP 8", ["Tortonon", "josegalas"], []]]}, {"s": 1050, "e": 1230, "g": "SF6", "h": 50, "f": "Top 8", "ph": [["TOP 8", ["tuliomamute", "Bomber"], []]]}]}, {"n": "Palco 2", "i": [{"s": 600, "e": 810, "g": "KOF XV", "h": 225, "f": "Top 8", "ph": [["TOP 8", ["Guizin", "Bomber"], []]]}, {"s": 810, "e": 990, "g": "Garou: COTW", "h": 335, "f": "Top 8", "ph": [["TOP 8", ["ZioL", "Djibuti"], []]]}, {"s": 1020, "e": 1230, "g": "2XKO", "h": 140, "f": "Top 8", "ph": [["TOP 8", ["Millia", "Keoma"], []]]}]}, {"n": "Palco 3", "i": [{"s": 600, "e": 735, "g": "GBVSR", "h": 190, "f": "Top 24", "ph": [["TOP 24", ["PL4Y", "Mihawk"], ["OP", "Bacaxi"]]]}, {"s": 735, "e": 870, "g": "GGST", "h": 0, "f": "Top 24", "ph": [["TOP 24", ["Gaiserick", "ZioL"], []]]}, {"s": 870, "e": 1050, "g": "GBVSR", "h": 190, "f": "Top 8", "ph": [["TOP 8", ["ZateFGC", "OP"], ["PL4Y"]]]}, {"s": 1050, "e": 1230, "g": "GGST", "h": 0, "f": "Top 8", "ph": [["TOP 8", ["ZateFGC", "Gokudeira12"], []]]}]}]}];const S=600,E=1230,T=E-S;let di=0,who="";
+const hh=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const names=[...new Set(D.flatMap(d=>d.s.flatMap(s=>s.i.flatMap(i=>(i.ph||[]).flatMap(p=>[...p[1],...p[2]])))))].sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase()));
+const sel=document.getElementById("who");names.forEach(n=>sel.add(new Option(n,n)));
+sel.onchange=()=>{who=sel.value;render()};
+const tabs=document.getElementById("tabs");
+D.forEach((d,i)=>{const b=document.createElement("button");b.textContent=d.d;b.setAttribute("role","tab");b.onclick=()=>{di=i;render()};tabs.append(b)});
+const has=(i)=>who&&i.ph&&i.ph.some(p=>p[1].includes(who)||p[2].includes(who));
+const nm=(a)=>a.map(x=>x===who?"<mark>"+esc(x)+"</mark>":esc(x)).join(" + ");
+const R={};const lab=(g,p)=>p==="TOP 24"?"Top 24 até definir o Top 8":p+(R[g+"|"+p]?" ("+R[g+"|"+p]+")":"");
+function render(){
+ [...tabs.children].forEach((b,i)=>b.setAttribute("aria-selected",i===di));
+ let h='<div class="hours">';for(let m=S;m<=E-30;m+=60)h+=`<span style="left:${(m-S)/T*100}%">${hh(m)}</span>`;h+='</div>';
+ D[di].s.forEach(st=>{h+=`<div class="row"><div class="st">${st.n}</div>`;
+  for(let m=S+60;m<E;m+=60)h+=`<div class="grid" style="left:${(m-S)/T*100}%"></div>`;
+  st.i.forEach(i=>{const st_=`left:${(i.s-S)/T*100}%;width:${(i.e-i.s)/T*100}%`;
+   if(i.o){h+=`<div class="blk o${who?" dim":""}" style="${st_}"><b>${esc(i.g)}</b><div class="tm">${hh(i.s)}–${hh(i.e)}</div></div>`;return}
+   const c=who?(has(i)?" hit":" dim"):"";
+   h+=`<div class="blk g${c}" style="${st_};--h:${i.h}"><b>${esc(i.g)}</b><div class="tm">${esc(i.f)} · ${hh(i.s)}–${hh(i.e)}</div>`+
+   (i.ph.length?i.ph:[]).map(p=>`<div class="ph"><i>${lab(i.g,p[0])}</i> ${nm(p[1])}${p[2].length?`<span class="bk">backup: ${nm(p[2])}</span>`:""}</div>`).join("")+(i.ph.length?"":'<div class="ph bk">Escalação a definir</div>')+`</div>`});
+  h+='</div>'});
+ document.getElementById("board").innerHTML=h;
+ const L=document.getElementById("list");
+ if(!who){L.innerHTML="";return}
+ const r=[];D.forEach(d=>d.s.forEach(s=>s.i.forEach(i=>(i.ph||[]).forEach(p=>{
+  const tit=p[1].includes(who),bk=p[2].includes(who);if(!tit&&!bk)return;
+  const par=(tit?p[1]:p[2]).filter(x=>x!==who).join(" + ");
+  r.push(`<li><b>${d.d} · ${hh(i.s)}–${hh(i.e)}</b> – ${esc(i.g)}, ${lab(i.g,p[0])} (${esc(s.n)}) · com ${esc(par||"a definir")}${bk?" · <span class='bk' style='display:inline'>backup</span>":""}</li>`)}))));
+ L.innerHTML=`<h2>Turnos de ${esc(who)} (${r.length})</h2><ul>${r.join("")}</ul>`}
+render();
+</script></body></html>
